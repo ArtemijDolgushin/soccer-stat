@@ -1,11 +1,9 @@
 export {API}
 
 class API {
-    static token = '';
-
     static async get(endpoint, filters) {
         const request = await fetch(`https://api.football-data.org/v2/${endpoint}${filters}`, {
-            headers: {'X-Auth-Token': this.token},
+            headers: {'X-Auth-Token': process.env.VUE_APP_API_TOKEN},
             dataType: 'json',
             type: 'GET',
         });
@@ -21,15 +19,14 @@ class API {
     }
 
     static async getCompetitionByID(id) {
-        return await this.get(`competitions`, `/${id}`);
+        return await this.get('competitions', `/${id}`);
     }
 
     static async getTeamByID(id) {
-        return await this.get(`teams`, `/${id}`);
+        return await this.get('teams', `/${id}`);
     }
 
-    static async getMatchesOfCompetition(id, dateFrom, dateTo) {
-        [dateFrom, dateTo] = [dateFrom ?? '', dateTo ?? ''];
+    static async getMatchesOfCompetition(id, dateFrom = '', dateTo = '') {
         return await this.get('competitions', `/${id}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`);
     }
 
@@ -37,8 +34,7 @@ class API {
         return await this.get('competitions', `/${id}/teams`);
     }
 
-    static async getMatchesOfTeam(id, dateFrom, dateTo) {
-        [dateFrom, dateTo] = [dateFrom ?? '', dateTo ?? ''];
+    static async getMatchesOfTeam(id, dateFrom = '', dateTo = '') {
         return await this.get('teams', `/${id}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`);
     }
 
