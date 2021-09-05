@@ -1,2 +1,2 @@
-process.env.VUE_APP_API_TOKEN = '46b583d809b94961910c01c9d09adfbc';
+process.env.VUE_APP_API_TOKEN = '';
 process.env.VUE_APP_API_AVAILABLE_TIERS = 'TIER_ONE';

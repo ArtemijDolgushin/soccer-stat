@@ -1,20 +1,53 @@
 <template>
-  <label for="nameFilterText">Название команды</label><input id="nameFilterText" v-model="nameFilter">
+  <label for="nameFilterText">Название команды</label><input
+    id="nameFilterText"
+    v-model="nameFilter"
+>
 
   <label for="nameFilterSelection">Выбрать команду</label>
-  <select id="nameFilterSelection" v-model="nameFilter">
-    <option v-if="teams.length === 0" disabled value="">Данные загружаются...</option>
-    <option v-for="team in filteredTeams" :key="team.name" :value="team.name">
+  <select
+      id="nameFilterSelection"
+      v-model="nameFilter"
+  >
+    <option
+        v-if="teams.length === 0"
+        disabled
+        value=""
+    >Данные загружаются...
+    </option>
+    <option
+        v-for="team in filteredTeams"
+        :key="team.name"
+        :value="team.name"
+    >
       {{ team.name }}
     </option>
   </select>
 
-  <label for="dateFromFilter">Выбрать матчи с </label><input id="dateFromFilter" v-model="dateFromFilter" type="date">
-  <label for="dateToFilter"> по </label><input id="dateToFilter" v-model="dateToFilter" type="date">
+  <label for="dateFromFilter">Выбрать матчи с </label><input
+    id="dateFromFilter"
+    v-model="dateFromFilter"
+    type="date"
+>
+  <label for="dateToFilter"> по </label><input
+    id="dateToFilter"
+    v-model="dateToFilter"
+    type="date"
+>
 
-  <button v-if="nameFilterIsValid" @click="getData">Найти матчи</button>
+  <button
+      v-if="nameFilterIsValid"
+      @click="getData"
+  >Найти матчи
+  </button>
 
-  <div class="m-5" v-for="match in matches" :key="match.id">
+  <div v-if="dataLoading">Данные загружаются...</div>
+  <div v-if="error">Произошла ошибка: {{ error }}</div>
+  <div
+      v-for="match in matches"
+      :key="match.id"
+      class="m-5"
+  >
     <div>
       <router-link :to="{ path: '/teams', query: {name: match.homeTeam.name}}">{{ match.homeTeam.name }}
       </router-link>
@@ -25,11 +58,15 @@
 
     <div v-if="match.score.winner">
       <span>Результат: </span>
-      <router-link :to="{ path: '/teams', query: {name: match.homeTeam.name}}"
-                   v-if="match.score.winner === 'HOME_TEAM'">Победила команда {{ match.homeTeam.name }}
+      <router-link
+          v-if="match.score.winner === 'HOME_TEAM'"
+          :to="{ path: '/teams', query: {name: match.homeTeam.name}}"
+      >Победила команда {{ match.homeTeam.name }}
       </router-link>
-      <router-link :to="{ path: '/teams', query: {name: match.awayTeam.name}}"
-                   v-if="match.score.winner === 'AWAY_TEAM'">Победила команда {{ match.awayTeam.name }}
+      <router-link
+          v-if="match.score.winner === 'AWAY_TEAM'"
+          :to="{ path: '/teams', query: {name: match.awayTeam.name}}"
+      >Победила команда {{ match.awayTeam.name }}
       </router-link>
       <span v-if="match.score.winner === 'DRAW'">Ничья</span>
     </div>
@@ -54,18 +91,28 @@ export default {
       matches: [],
       nameFilter: '',
       dateFromFilter: '',
-      dateToFilter: ''
+      dateToFilter: '',
+      dataLoading: false,
+      error: null
     };
   },
   computed: {
     filteredTeams() {
-      return this.teams.filter(selector => selector.name.match(this.getRegExpFromString(this.nameFilter)));
+      return this.teams.filter(
+          selector => selector.name.match(
+              this.getRegExpFromString(this.nameFilter)
+          )
+      );
     },
     nameFilterIsValid() {
-      return this.teams.some(competition => competition.name === this.nameFilter);
+      return this.teams.some(
+          competition => competition.name === this.nameFilter
+      );
     },
     teamID() {
-      return this.teams.find(team => team.name === this.nameFilter).id;
+      return this.teams.find(
+          team => team.name === this.nameFilter
+      ).id;
     }
   },
   methods: {
@@ -81,26 +128,39 @@ export default {
     },
     async getDataFromSearch() {
       try {
-        const {matches: matches} = await API.getMatchesOfTeam(this.teamID, this.dateFromFilter, this.dateToFilter);
+        this.dataLoading = true;
+        const {matches} = await API.getMatchesOfTeam(
+            this.teamID, this.dateFromFilter, this.dateToFilter
+        );
         this.matches = matches;
       } catch (error) {
-        console.log(error);
+        this.error = error;
+      } finally {
+        this.dataLoading = false;
       }
     },
     async getDataFromUrl() {
       try {
-        const {matches: matches} = await API.getMatchesOfTeam(this.$route.query.teamID, this.$route.query.dateFrom, this.$route.query.dateTo);
+        this.dataLoading = true;
+        const {matches} = await API.getMatchesOfTeam(
+            this.$route.query.teamID, this.$route.query.dateFrom, this.$route.query.dateTo
+        );
         this.matches = matches;
       } catch (error) {
-        console.log(error);
+        this.error = error;
+      } finally {
+        this.dataLoading = false;
       }
     },
     async getTeams() {
       try {
-        const {teams: teams} = await API.getTeams();
+        this.dataLoading = true;
+        const {teams} = await API.getTeams();
         this.teams = teams;
       } catch (error) {
-        console.log(error);
+        this.error = error;
+      } finally {
+        this.dataLoading = false;
       }
     },
     getRegExpFromString(string) {
