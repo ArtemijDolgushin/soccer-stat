@@ -1,12 +1,14 @@
 <template>
-  <div></div>
+  <SelectionPage></SelectionPage>
 </template>
 
 <script>
 
+import SelectionPage from "./components/SelectionPage";
+
 export default {
   name: 'App',
-  components: {}
+  components: {SelectionPage}
 }
 </script>
 
