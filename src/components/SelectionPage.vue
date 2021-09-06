@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-around bg-green-100 p-4">
+  <div class="flex justify-around bg-gray-200 p-4">
     <router-link
         to="/competitions"
         class="link"
@@ -38,6 +38,6 @@ export default {
 .link {
   @apply border
   border-indigo-500
-  text-indigo-500 rounded-md px-4 py-2 m-2 transition duration-500  select-none hover:text-white hover:bg-indigo-600 focus:outline-none
+  text-indigo-500 rounded-md w-96 text-center px-4 py-2 m-2 transition duration-500  select-none hover:text-white hover:bg-indigo-600 focus:outline-none
 }
 </style>

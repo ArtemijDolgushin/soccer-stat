@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center p-4 bg-yellow-50">
+  <div class="flex justify-center p-4 bg-gray-50">
     <label
         for="nameFilterText"
         class="mr-4"
@@ -90,7 +90,7 @@
     <div
         v-for="match in matches"
         :key="match.id"
-        class="card-available"
+        class="card"
     >
       <div class="mb-6">
         <router-link
@@ -113,7 +113,7 @@
           class="mb-6"
       >
         <span>Результат: </span>
-        Победила команда
+        <span v-if="match.score.winner !== 'DRAW'"> Победила команда </span>
         <router-link
             v-if="match.score.winner === 'HOME_TEAM'"
             :to="{ path: '/teams', query: {name: match.homeTeam.name}}"
@@ -198,6 +198,7 @@ export default {
     },
     async getDataFromSearch() {
       try {
+        this.errorHappened = false;
         this.dataLoading = true;
         const {matches} = await API.getMatchesOfTeam(
             this.teamID, this.dateFromFilter, this.dateToFilter
@@ -212,6 +213,7 @@ export default {
     },
     async getDataFromUrl() {
       try {
+        this.errorHappened = false;
         this.dataLoading = true;
         const {matches} = await API.getMatchesOfTeam(
             this.$route.query.teamID, this.$route.query.dateFrom, this.$route.query.dateTo
@@ -226,6 +228,7 @@ export default {
     },
     async getTeams() {
       try {
+        this.errorHappened = false;
         const {teams} = await API.getTeams();
         this.teams = teams;
       } catch (error) {
@@ -256,22 +259,22 @@ export default {
   text-green-500 rounded-md px-2 py-1 m-2 transition duration-500 text-center select-none hover:text-white hover:bg-green-600 focus:outline-none
 }
 
-.card-available {
-  @apply m-5 p-3 bg-green-50  hover:bg-green-300 flex flex-col  space-x-6 rounded-lg shadow-md hover:scale-105 transition transform duration-500
+.card {
+  @apply m-5 p-3 border-2 border-blue-900  text-center flex flex-col  space-x-6 rounded-lg shadow-md hover:scale-105 transition transform duration-500
 }
 
 .loading-message {
-  @apply p-3 bg-green-50  hover:bg-green-300 flex flex-col items-center
+  @apply p-3   hover:bg-green-300 flex flex-col items-center
   transition transform duration-500  rounded-lg shadow-md
 }
 
 .error-message {
-  @apply p-3 bg-red-50  hover:bg-red-300 flex flex-col items-center
+  @apply p-3   hover:bg-red-300 flex flex-col items-center
   transition transform duration-500 rounded-lg shadow-md
 }
 
 .matches-not-found-message {
-  @apply p-3 bg-yellow-50  hover:bg-yellow-300 flex flex-col items-center
+  @apply p-3   hover:bg-yellow-300 flex flex-col items-center
   transition transform duration-500 rounded-lg shadow-md
 }
 </style>

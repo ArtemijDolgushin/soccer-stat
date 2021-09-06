@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center p-4 bg-yellow-50">
+  <div class="flex justify-center p-4 bg-gray-50">
     <label
         for="nameFilter"
         class="mr-4"
@@ -38,7 +38,7 @@
     <div
         v-for="team in filteredTeams"
         :key="team.id"
-        class="card-available"
+        class="card"
     >
       <h1 class="text-xl font-bold text-gray-700 mb-2">{{ team.name }}</h1>
 
@@ -94,6 +94,7 @@ export default {
   methods: {
     async getData() {
       try {
+        this.errorHappened = false;
         this.dataLoading = true;
         const {teams: teams} = await API.getTeams();
         this.teams = teams;
@@ -122,17 +123,17 @@ export default {
   text-indigo-500 rounded-md px-4 py-2 m-2 transition duration-500 text-center select-none hover:text-white hover:bg-indigo-600 focus:outline-none
 }
 
-.card-available {
-  @apply m-5 p-3 bg-green-50  hover:bg-green-300 flex flex-col  space-x-6 rounded-lg shadow-md hover:scale-105 transition transform duration-500
+.card {
+  @apply m-5 p-3 border-2 border-blue-900  flex flex-col text-center space-x-6 rounded-lg shadow-md hover:scale-105 transition transform duration-500
 }
 
 .loading-message {
-  @apply p-3 bg-green-50  hover:bg-green-300 flex flex-col items-center
+  @apply p-3  hover:bg-green-300 flex flex-col items-center
   transition transform duration-500  rounded-lg shadow-md
 }
 
 .error-message {
-  @apply p-3 bg-red-50  hover:bg-red-300 flex flex-col items-center
+  @apply p-3 hover:bg-red-300 flex flex-col items-center
   transition transform duration-500 rounded-lg shadow-md
 }
 </style>
