@@ -18,30 +18,13 @@ class API {
         return await this.get('teams', '?areas=2077');
     }
 
-    static async getCompetitionByID(id) {
-        return await this.get('competitions', `/${id}`);
-    }
-
-    static async getTeamByID(id) {
-        return await this.get('teams', `/${id}`);
-    }
-
     static async getMatchesOfCompetition(id, dateFrom = '', dateTo = '') {
         return await this.get('competitions', `/${id}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`);
-    }
-
-    static async getTeamsOfCompetition(id) {
-        return await this.get('competitions', `/${id}/teams`);
     }
 
     static async getMatchesOfTeam(id, dateFrom = '', dateTo = '') {
         return await this.get('teams', `/${id}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`);
     }
-
-    static async getMatchByID(id) {
-        return await this.get('matches', `/${id}`);
-    }
-
 }
 
 
